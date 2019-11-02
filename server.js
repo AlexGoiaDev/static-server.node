@@ -56,7 +56,7 @@ const spotifyRequest = params => {
 
 // Route to obtain a new Token
 app.post('/exchange', (req, res) => {
-
+    console.log('!!!! Obtain a new token')
     const params = req.body;
     if (!params.code) {
         return res.json({
@@ -86,6 +86,7 @@ app.post('/exchange', (req, res) => {
 
 // Get a new access token from a refresh token
 app.post('/refresh', (req, res) => {
+    console.log('!!!! Refresh token')
     const params = req.body;
     if (!params.refresh_token) {
         return res.json({
