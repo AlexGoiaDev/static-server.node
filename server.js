@@ -62,12 +62,20 @@ app.post('/exchange', (req, res) => {
     console.log('!!!! Obtain a new token')
     const params = req.body;
     console.log('!!!! params', params);
+
+    let result = {
+        "access_token": 'meloinvento',
+        "expires_in": 'meloinvento',
+        "refresh_token": encrypt('meloinvento')
+    };
+    return res.send(result);
+    /*
     if (!params.code) {
         return res.json({
             "error": "Parameter missing"
         });
-    }
-
+    }*/
+    /*
     spotifyRequest({
         grant_type: "authorization_code",
         redirect_uri: CLIENT_CALLBACK_URL,
@@ -83,6 +91,7 @@ app.post('/exchange', (req, res) => {
     .catch(response => {
         return res.json(response);
     });
+    */
 });
 
 
