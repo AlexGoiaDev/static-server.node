@@ -107,6 +107,12 @@ app.post('/refresh', (req, res) => {
     });
 });
 
+app.get('/test', (req, res) => {
+    res.send({
+        test: 'Test work'
+    })
+});
+
 // Helper functions
 function encrypt(text) {
   return CryptoJS.AES.encrypt(text, ENCRYPTION_SECRET).toString();
