@@ -2,7 +2,6 @@ const
     cors = require('cors'),
     express = require('express'),
     compression = require('compression'),
-    dotenv = require('dotenv'),
     path = require('path'),
     app = express(),
     bodyParser = require('body-parser'),
@@ -17,7 +16,6 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const CLIENT_CALLBACK_URL = process.env.CLIENT_CALLBACK_URL;
 const ENCRYPTION_SECRET = process.env.ENCRYPTION_SECRET;
 
-dotenv.load();
 app.use(compression());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -120,5 +118,5 @@ function decrypt(text) {
 };
 
 var server = app.listen(PORT, () => {
-    console.log(`Static Server running on port ${PORT}`);
+    console.log(`Server running on ${PORT}`);
 });
