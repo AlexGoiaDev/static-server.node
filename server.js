@@ -38,7 +38,16 @@ const spotifyRequest = params => {
             form: params,
             headers: authorization,
             json: true
-        }, (err, resp) => err ? reject(err) : resolve(resp));
+        }, (err, resp) => {
+            if(err) {
+                console.log('Error', err);
+                reject(err)
+                
+            } else {
+                console.log('Respuesta correcta', resp);
+                resolve(resp);
+            }
+        });
     })
         .then(resp => {
             if (resp.statusCode != 200) {
