@@ -29,11 +29,14 @@ app.use(express.static(path.join(__dirname + '/static')));
 
 const spotifyRequest = params => {
     return new Promise((resolve, reject) => {
+        const authorization = {
+            "Authorization": "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET)
+        };
+        console.log('Authorization', authorization);
+
         request.post(API_URL, {
             form: params,
-            headers: {
-                "Authorization": "Basic " + new Buffer(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
-            },
+            headers: authorization,
             json: true
         }, (err, resp) => err ? reject(err) : resolve(resp));
     })
