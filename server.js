@@ -61,6 +61,7 @@ const spotifyRequest = params => {
 app.post('/exchange', (req, res) => {
     console.log('!!!! Obtain a new token')
     const params = req.body;
+    console.log('!!!! params', params);
     if (!params.code) {
         return res.json({
             "error": "Parameter missing"
@@ -71,18 +72,17 @@ app.post('/exchange', (req, res) => {
         grant_type: "authorization_code",
         redirect_uri: CLIENT_CALLBACK_URL,
         code: params.code
+    }).then(session => {
+        let result = {
+            "access_token": session.access_token,
+            "expires_in": session.expires_in,
+            "refresh_token": encrypt(session.refresh_token)
+        };
+        return res.send(result);
     })
-        .then(session => {
-            let result = {
-                "access_token": session.access_token,
-                "expires_in": session.expires_in,
-                "refresh_token": encrypt(session.refresh_token)
-            };
-            return res.send(result);
-        })
-        .catch(response => {
-            return res.json(response);
-        });
+    .catch(response => {
+        return res.json(response);
+    });
 });
 
 
@@ -100,15 +100,15 @@ app.post('/refresh', (req, res) => {
         grant_type: "refresh_token",
         refresh_token: decrypt(params.refresh_token)
     })
-    .then(session => {
-        return res.send({
-            "access_token": session.access_token,
-            "expires_in": session.expires_in
+        .then(session => {
+            return res.send({
+                "access_token": session.access_token,
+                "expires_in": session.expires_in
+            });
+        })
+        .catch(response => {
+            return res.json(response);
         });
-    })
-    .catch(response => {
-        return res.json(response);
-    });
 });
 
 app.get('/test', (req, res) => {
@@ -119,12 +119,12 @@ app.get('/test', (req, res) => {
 
 // Helper functions
 function encrypt(text) {
-  return CryptoJS.AES.encrypt(text, ENCRYPTION_SECRET).toString();
+    return CryptoJS.AES.encrypt(text, ENCRYPTION_SECRET).toString();
 };
- 
+
 function decrypt(text) {
-  var bytes = CryptoJS.AES.decrypt(text, ENCRYPTION_SECRET);
-  return bytes.toString(CryptoJS.enc.Utf8);
+    var bytes = CryptoJS.AES.decrypt(text, ENCRYPTION_SECRET);
+    return bytes.toString(CryptoJS.enc.Utf8);
 };
 
 var server = app.listen(PORT, () => {
