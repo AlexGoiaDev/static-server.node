@@ -65,10 +65,10 @@ app.post('/exchange', (req, res) => {
 
     let result = {
         "access_token": 'meloinvento',
-        "expires_in": 'meloinvento',
-        "refresh_token": encrypt('meloinvento')
+        "expires_in": 10000,
+        "refresh_token": 'meloinvento'
     };
-    return res.send(result);
+    res.send(result);
     /*
     if (!params.code) {
         return res.json({
@@ -100,11 +100,12 @@ app.post('/exchange', (req, res) => {
 app.post('/refresh', (req, res) => {
     console.log('!!!! Refresh token')
     const params = req.body;
-    if (!params.refresh_token) {
-        return res.json({
-            "error": "Parameter missing"
-        });
-    }
+    console.log('!!!! Params', params)
+    res.send({
+        "access_token": 'me lo invento',
+        "expires_in": 100000
+    });
+    /*
     spotifyRequest({
         grant_type: "refresh_token",
         refresh_token: decrypt(params.refresh_token)
@@ -118,6 +119,7 @@ app.post('/refresh', (req, res) => {
         .catch(response => {
             return res.json(response);
         });
+        */
 });
 
 app.get('/test', (req, res) => {
