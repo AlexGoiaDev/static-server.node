@@ -82,6 +82,7 @@ app.post('/exchange', (req, res) => {
         code: params.code
     })
         .then(session => {
+            console.log('Session', session);
             let result = {
                 "access_token": session.access_token,
                 "expires_in": session.expires_in,
@@ -90,6 +91,7 @@ app.post('/exchange', (req, res) => {
             return res.send(result);
         })
         .catch(response => {
+            console.log('!!!!! ERROR', response);
             return res.json(response);
         });
 });
