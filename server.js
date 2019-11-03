@@ -44,6 +44,7 @@ const spotifyRequest = params => {
             headers: authorization,
             body: querystring.stringify(params)
         }).then(res => {
+            
             console.log('------------------------- Res', res)
             resolve(res);
 
