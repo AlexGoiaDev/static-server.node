@@ -8,6 +8,8 @@ const
     request = require('request'),
     CryptoJS = require('crypto-js');
 const fetch = require('node-fetch');
+var querystring = require('querystring');
+
 
 
 const PORT = process.env.PORT || 3000;
@@ -38,7 +40,7 @@ const spotifyRequest = params => {
         fetch(API_URL, {
             method: 'POST',
             headers: authorization,
-            form: params
+            form: querystring.stringify(params)
         }).then(res => {
             console.log('Res', res)
             resolve(res);
