@@ -31,7 +31,7 @@ const spotifyRequest = params => {
     console.log('spotifyRequest', params);
     return new Promise((resolve, reject) => {
         const authorization = {
-            "Authorization": "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET)
+            "Authorization": "Basic " + new Buffer(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
         };
         console.log('Authorization', authorization)
         fetch(API_URL, {
