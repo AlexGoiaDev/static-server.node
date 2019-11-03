@@ -29,6 +29,7 @@ app.use(cors({
     origin: true,
     credentials: true
 }));
+
 app.use(express.static(path.join(__dirname + '/static')));
 
 const spotifyRequest = params => {
@@ -53,13 +54,26 @@ const spotifyRequest = params => {
             API_URL,
             options
         ).then(res => {
-            zlib.inflate(res, (err, result) => {
+            console.log(res)
+            const test = {
+                "access_token": "BQC4r7OQGwNDOw4KvSKHNoL_3U_l-PDQbYNHI2-B0Bj7f-TjlCDrHRHcSuLSx8R6Db0Vj00h6xHQqaV9eZEda4HuxDitjBlcKnuHv86RaWPHFYqsriV1jn_0i9YOqD9Bw-AHHLdBUT-Gfm26_pXwO9dx5IBjqZoQXHozkuvYbhH-W9rsaV6i41ThYu_1",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "AQCA_xPLreXRRcSBcWSO0TDGOwTTPnYS9vNtBMrKFgoLJMn0cGeszmf23kosugwG2VM5kwH4ok3rO806C82AKAAfJcTP-koVfr3faiAl39dzl671QsM5weg7GXBLGQaORnSU6A",
+                "scope": "playlist-read-private streaming user-read-email user-read-private user-top-read"
+            }
+            resolve({
+                statusCode: 200,
+                body: test
+            });
+            /*
+            zlib.inflate(JSON.stringify(res), (err, result) => {
                 if(err) {
                     reject(err)
                 }
                 console.log('Response to return', result);
                 resolve(result);
-            });
+            });*/
         }).catch(err => {
             console.log('¡!Err', err)
             reject(err);
@@ -88,64 +102,26 @@ const spotifyRequest = params => {
 
 // Route to obtain a new Token
 app.post('/exchange', (req, res) => {
-    console.log('!!!! Obtain a new token')
     const params = req.body;
     console.log('params', params)
-    console.log('client_callback', CLIENT_CALLBACK_URL)
-    if (!params.code) {
-        return res.json({
-            "error": "Parameter missing"
-        });
-    }
-
-    spotifyRequest({
-        grant_type: "authorization_code",
-        redirect_uri: CLIENT_CALLBACK_URL,
-        code: params.code,
-        client_secret: CLIENT_SECRET,
-        client_id: CLIENT_ID
-    })
-        .then(session => {
-            console.log('*********** Session', session);
-            let result = {
-                "access_token": session.access_token,
-                "expires_in": session.expires_in,
-                "refresh_token": encrypt(session.refresh_token)
-            };
-            return res.send(result);
-        })
-        .catch(response => {
-            console.log('!!!!! ERROR', response);
-            return res.json(response);
-        });
+    const formData = querystring.parse(params)
+    console.log('form', formData)
+    request.post(API_URL, {
+        form: params
+    }, (err, respuesta, body) => {
+        if(err) {
+            res.send({err});
+        } else {
+            res.send(body);
+        }
+    });
 });
 
 
 
 // Get a new access token from a refresh token
 app.post('/refresh', (req, res) => {
-    console.log('!!!! Refresh token')
-    const params = req.body;
-    if (!params.refresh_token) {
-        return res.json({
-            "error": "Parameter missing"
-        });
-    }
-    spotifyRequest({
-        grant_type: "refresh_token",
-        refresh_token: decrypt(params.refresh_token),
-        client_secret: CLIENT_SECRET,
-        client_id: CLIENT_ID
-    })
-        .then(session => {
-            return res.send({
-                "access_token": session.access_token,
-                "expires_in": session.expires_in
-            });
-        })
-        .catch(response => {
-            return res.json(response);
-        });
+
 });
 
 app.get('/', (req, res) => {
