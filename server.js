@@ -134,6 +134,12 @@ app.post('/refresh', (req, res) => {
     });
 });
 
+app.get('/', (req, res) => {
+    res.send({
+        message : 'All working fine :)'
+    })
+})
+
 app.get('/test', (req, res) => {
     res.send({
         test: 'Test work'
