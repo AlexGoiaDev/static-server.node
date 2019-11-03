@@ -39,7 +39,7 @@ const spotifyRequest = params => {
             "Accept-Encoding": "gzip, deflate"
 
         };
-        console.log('!! Authorization', authorization)
+
         fetch(API_URL, {
             method: 'POST',
             headers,
