@@ -44,7 +44,7 @@ const spotifyRequest = params => {
             headers: authorization,
             body: querystring.stringify(params)
         }).then(res => {
-            console.log('Res', res)
+            console.log('------------------------- Res', res)
             resolve(res);
 
         }).catch(err => {
@@ -53,7 +53,7 @@ const spotifyRequest = params => {
         })
     })
         .then(resp => {
-            console.log('Resp', resp.bodyParser);
+            console.log('Resp', resp.body);
             console.log('Status code', resp.statusCode);
             if (resp.statusCode != 200) {
                 console.log('Status code')
