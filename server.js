@@ -28,26 +28,24 @@ app.use(cors({
 app.use(express.static(path.join(__dirname + '/static')));
 
 const spotifyRequest = params => {
+    console.log('spotifyRequest', params);
     return new Promise((resolve, reject) => {
         const authorization = {
             "Authorization": "Basic " + btoa(CLIENT_ID + ":" + CLIENT_SECRET)
         };
         console.log('Authorization', authorization)
-
-        request.post(API_URL, {
-            form: params,
+        fetch(API_URL, {
+            method: 'POST',
             headers: authorization,
-            json: true
-        }, (err, resp) => {
-            if(err) {
-                console.log('Error', err);
-                reject(err)
-                
-            } else {
-                console.log('Respuesta correcta', resp);
-                resolve(resp);
-            }
-        });
+            form: params
+        }).then(res => {
+            console.log('Res', res)
+            resolve(res);
+
+        }).catch(err => {
+            console.log('¡!Err', err)
+            reject(err);
+        })
     })
         .then(resp => {
             if (resp.statusCode != 200) {
@@ -111,15 +109,15 @@ app.post('/refresh', (req, res) => {
         grant_type: "refresh_token",
         refresh_token: decrypt(params.refresh_token)
     })
-    .then(session => {
-        return res.send({
-            "access_token": session.access_token,
-            "expires_in": session.expires_in
+        .then(session => {
+            return res.send({
+                "access_token": session.access_token,
+                "expires_in": session.expires_in
+            });
+        })
+        .catch(response => {
+            return res.json(response);
         });
-    })
-    .catch(response => {
-        return res.json(response);
-    });
 });
 
 app.get('/test', (req, res) => {
@@ -130,12 +128,12 @@ app.get('/test', (req, res) => {
 
 // Helper functions
 function encrypt(text) {
-  return CryptoJS.AES.encrypt(text, ENCRYPTION_SECRET).toString();
+    return CryptoJS.AES.encrypt(text, ENCRYPTION_SECRET).toString();
 };
- 
+
 function decrypt(text) {
-  var bytes = CryptoJS.AES.decrypt(text, ENCRYPTION_SECRET);
-  return bytes.toString(CryptoJS.enc.Utf8);
+    var bytes = CryptoJS.AES.decrypt(text, ENCRYPTION_SECRET);
+    return bytes.toString(CryptoJS.enc.Utf8);
 };
 
 var server = app.listen(PORT, () => {
