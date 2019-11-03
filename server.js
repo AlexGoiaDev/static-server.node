@@ -53,9 +53,13 @@ const spotifyRequest = params => {
             API_URL,
             options
         ).then(res => {
-            const responseToReturn = zlib.inflate(res);
-            console.log('Response to return', responseToReturn);
-            resolve(responseToReturn);
+            zlib.inflate(res, (err, result) => {
+                if(err) {
+                    reject(err)
+                }
+                console.log('Response to return', result);
+                resolve(result);
+            });
         }).catch(err => {
             console.log('¡!Err', err)
             reject(err);
