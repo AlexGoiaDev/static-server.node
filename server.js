@@ -41,7 +41,7 @@ const spotifyRequest = params => {
         fetch(API_URL, {
             method: 'POST',
             headers: authorization,
-            form: querystring.stringify(params)
+            body: querystring.stringify(params)
         }).then(res => {
             console.log('Res', res)
             resolve(res);
