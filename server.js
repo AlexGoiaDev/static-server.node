@@ -8,7 +8,8 @@ const
     request = require('request'),
     CryptoJS = require('crypto-js');
 const fetch = require('node-fetch');
-var querystring = require('querystring');
+const querystring = require('querystring');
+const zlib = require('zlib');
 
 
 
@@ -52,7 +53,9 @@ const spotifyRequest = params => {
             API_URL,
             options
         ).then(res => {
-            resolve(res);
+            const responseToReturn = zlib.inflate(res);
+            console.log('Response to return', responseToReturn);
+            resolve(responseToReturn);
         }).catch(err => {
             console.log('¡!Err', err)
             reject(err);
