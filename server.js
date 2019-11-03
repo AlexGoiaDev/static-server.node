@@ -37,14 +37,21 @@ const spotifyRequest = params => {
         const headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Accept-Encoding": "gzip, deflate"
-
         };
 
-        fetch(API_URL, {
+        const body = querystring.stringify(params);
+        const options = {
             method: 'POST',
             headers,
-            body: querystring.stringify(params)
-        }).then(res => {
+            body
+        };
+
+        console.log('Options', options);
+
+        fetch(
+            API_URL,
+            options
+        ).then(res => {
             resolve(res);
         }).catch(err => {
             console.log('¡!Err', err)
@@ -92,7 +99,7 @@ app.post('/exchange', (req, res) => {
         client_id: CLIENT_ID
     })
         .then(session => {
-            console.log('Session', session);
+            console.log('*********** Session', session);
             let result = {
                 "access_token": session.access_token,
                 "expires_in": session.expires_in,
@@ -123,20 +130,20 @@ app.post('/refresh', (req, res) => {
         client_secret: CLIENT_SECRET,
         client_id: CLIENT_ID
     })
-    .then(session => {
-        return res.send({
-            "access_token": session.access_token,
-            "expires_in": session.expires_in
+        .then(session => {
+            return res.send({
+                "access_token": session.access_token,
+                "expires_in": session.expires_in
+            });
+        })
+        .catch(response => {
+            return res.json(response);
         });
-    })
-    .catch(response => {
-        return res.json(response);
-    });
 });
 
 app.get('/', (req, res) => {
     res.send({
-        message : 'All working fine :)'
+        message: 'All working fine :)'
     })
 })
 
