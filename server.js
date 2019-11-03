@@ -32,7 +32,7 @@ const spotifyRequest = params => {
     console.log('spotifyRequest', params);
     return new Promise((resolve, reject) => {
         const authorization = {
-            "Authorization": "Basic " + new Buffer(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
+            "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
         };
         console.log('Authorization', authorization)
         fetch(API_URL, {
@@ -49,7 +49,7 @@ const spotifyRequest = params => {
         })
     })
         .then(resp => {
-            console.log('Resp', res)
+            console.log('Resp', resp)
             if (resp.statusCode != 200) {
                 return Promise.reject({
                     statusCode: resp.statusCode,
