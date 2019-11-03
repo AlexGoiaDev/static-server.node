@@ -35,21 +35,16 @@ const spotifyRequest = params => {
 
     return new Promise((resolve, reject) => {
         const authorization = {
-            "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64'),
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Accept": "application/json"
+            "Authorization": "Basic *" + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64') + "*",
+            "Content-Type": "application/x-www-form-urlencoded"
         };
-        console.log('Authorization', authorization)
+        console.log('!! Authorization', authorization)
         fetch(API_URL, {
             method: 'POST',
             headers: authorization,
             body: querystring.stringify(params)
         }).then(res => {
-
-            console.log('------------------------- Res', JSON.parse(res))
-            console.log('------------------------- !!Res', JSON.stringify(res))
             resolve(res);
-
         }).catch(err => {
             console.log('¡!Err', err)
             reject(err);
