@@ -36,7 +36,8 @@ const spotifyRequest = params => {
     return new Promise((resolve, reject) => {
         const authorization = {
             "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64'),
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
         };
         console.log('Authorization', authorization)
         fetch(API_URL, {
@@ -45,8 +46,8 @@ const spotifyRequest = params => {
             body: querystring.stringify(params)
         }).then(res => {
 
-            console.log('------------------------- Res',JSON.parse(res))
-            console.log('------------------------- !! Res',JSON.stringify(res))
+            console.log('------------------------- Res', JSON.parse(res))
+            console.log('------------------------- !!Res', JSON.stringify(res))
             resolve(res);
 
         }).catch(err => {
@@ -92,19 +93,19 @@ app.post('/exchange', (req, res) => {
         redirect_uri: CLIENT_CALLBACK_URL,
         code: params.code
     })
-    .then(session => {
-        console.log('Session', session);
-        let result = {
-            "access_token": session.access_token,
-            "expires_in": session.expires_in,
-            "refresh_token": encrypt(session.refresh_token)
-        };
-        return res.send(result);
-    })
-    .catch(response => {
-        console.log('!!!!! ERROR', response);
-        return res.json(response);
-    });
+        .then(session => {
+            console.log('Session', session);
+            let result = {
+                "access_token": session.access_token,
+                "expires_in": session.expires_in,
+                "refresh_token": encrypt(session.refresh_token)
+            };
+            return res.send(result);
+        })
+        .catch(response => {
+            console.log('!!!!! ERROR', response);
+            return res.json(response);
+        });
 });
 
 
