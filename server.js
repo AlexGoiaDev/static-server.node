@@ -31,10 +31,9 @@ app.use(cors({
 app.use(express.static(path.join(__dirname + '/static')));
 
 const spotifyRequest = params => {
-    console.log('-- spotifyRequest', params);
+    console.log(' -- spotifyRequest', params);
 
     return new Promise((resolve, reject) => {
-
         const authorization = {
             "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64'),
             "Content-Type": "application/x-www-form-urlencoded"
@@ -54,8 +53,10 @@ const spotifyRequest = params => {
         })
     })
         .then(resp => {
-            console.log('Resp', resp)
+            console.log('Resp', resp.bodyParser);
+            console.log('Status code', resp.statusCode);
             if (resp.statusCode != 200) {
+                console.log('Status code')
                 return Promise.reject({
                     statusCode: resp.statusCode,
                     body: resp.body
@@ -89,19 +90,19 @@ app.post('/exchange', (req, res) => {
         redirect_uri: CLIENT_CALLBACK_URL,
         code: params.code
     })
-        .then(session => {
-            console.log('Session', session);
-            let result = {
-                "access_token": session.access_token,
-                "expires_in": session.expires_in,
-                "refresh_token": encrypt(session.refresh_token)
-            };
-            return res.send(result);
-        })
-        .catch(response => {
-            console.log('!!!!! ERROR', response);
-            return res.json(response);
-        });
+    .then(session => {
+        console.log('Session', session);
+        let result = {
+            "access_token": session.access_token,
+            "expires_in": session.expires_in,
+            "refresh_token": encrypt(session.refresh_token)
+        };
+        return res.send(result);
+    })
+    .catch(response => {
+        console.log('!!!!! ERROR', response);
+        return res.json(response);
+    });
 });
 
 
