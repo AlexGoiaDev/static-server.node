@@ -34,14 +34,15 @@ const spotifyRequest = params => {
     console.log(' -- spotifyRequest', params);
 
     return new Promise((resolve, reject) => {
-        const authorization = {
-            "Authorization": "Basic *" + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64') + "*",
-            "Content-Type": "application/x-www-form-urlencoded"
+        const headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept-Encoding": "gzip, deflate"
+
         };
         console.log('!! Authorization', authorization)
         fetch(API_URL, {
             method: 'POST',
-            headers: authorization,
+            headers,
             body: querystring.stringify(params)
         }).then(res => {
             resolve(res);
@@ -86,7 +87,9 @@ app.post('/exchange', (req, res) => {
     spotifyRequest({
         grant_type: "authorization_code",
         redirect_uri: CLIENT_CALLBACK_URL,
-        code: params.code
+        code: params.code,
+        client_secret: CLIENT_SECRET,
+        client_id: CLIENT_ID
     })
         .then(session => {
             console.log('Session', session);
@@ -116,17 +119,19 @@ app.post('/refresh', (req, res) => {
     }
     spotifyRequest({
         grant_type: "refresh_token",
-        refresh_token: decrypt(params.refresh_token)
+        refresh_token: decrypt(params.refresh_token),
+        client_secret: CLIENT_SECRET,
+        client_id: CLIENT_ID
     })
-        .then(session => {
-            return res.send({
-                "access_token": session.access_token,
-                "expires_in": session.expires_in
-            });
-        })
-        .catch(response => {
-            return res.json(response);
+    .then(session => {
+        return res.send({
+            "access_token": session.access_token,
+            "expires_in": session.expires_in
         });
+    })
+    .catch(response => {
+        return res.json(response);
+    });
 });
 
 app.get('/test', (req, res) => {
