@@ -34,7 +34,7 @@ const spotifyRequest = params => {
     console.log('-- spotifyRequest', params);
 
     return new Promise((resolve, reject) => {
-        
+
         const authorization = {
             "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
         };
@@ -75,6 +75,8 @@ const spotifyRequest = params => {
 app.post('/exchange', (req, res) => {
     console.log('!!!! Obtain a new token')
     const params = req.body;
+    console.log('params', params)
+    console.log('client_callback', CLIENT_CALLBACK_URL)
     if (!params.code) {
         return res.json({
             "error": "Parameter missing"
