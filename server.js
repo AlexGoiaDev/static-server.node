@@ -7,6 +7,7 @@ const
     bodyParser = require('body-parser'),
     request = require('request'),
     CryptoJS = require('crypto-js');
+const fetch = require('node-fetch');
 
 
 const PORT = process.env.PORT || 3000;
