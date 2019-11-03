@@ -34,6 +34,7 @@ const spotifyRequest = params => {
     console.log('-- spotifyRequest', params);
 
     return new Promise((resolve, reject) => {
+        
         const authorization = {
             "Authorization": "Basic " + Buffer.from(CLIENT_ID + ":" + CLIENT_SECRET).toString('base64')
         };
